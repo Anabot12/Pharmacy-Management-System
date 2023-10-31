@@ -3,6 +3,7 @@ import java.util.*;
 public class Pharmacy {
     private static final int max = 10;
 
+    // Define a Node class to represent a customer and their order
     class Node {
         String customerName;
         int[] quantity = new int[max];
@@ -12,7 +13,7 @@ public class Pharmacy {
         double[] amount = new double[max];
         String[] medicineName = {"Paracetamol", "Saridon", "Crocin", "Benadryl", "Dolo(650)",
                 "Allegra(180)", "Meftal Spas tablet", "Vomitril Tablet", "Cyclomeff Tablet", "Ibuprofen"};
-        double[] Medicine = {2.00, 3.00, 1.00, 4.00, 1.00, 5.00, 7.00, 4.00, 3.00, 5.00,7.00};
+        double[] Medicine = {2.00, 3.00, 1.00, 4.00, 1.00, 5.00, 7.00, 4.00, 3.00, 5.00, 7.00};
         String[] symptoms = {"Fever", "Headache", "Cough", "Nausea", "Menstural Pain", "Stomach Ache"};
         double total;
         Node next;
@@ -28,15 +29,38 @@ public class Pharmacy {
 
         private void initializeSymptomMedicineMap() {
             symptomMedicineMap = new HashMap<>();
-            symptomMedicineMap.put("Fever", Arrays.asList("Paracetamol", "Crocin","Dolo(650)"));
-            symptomMedicineMap.put("Headache", Arrays.asList("Saridon", "Paracetamol","Asprin"));
-            symptomMedicineMap.put("Cough", Arrays.asList("Benadryl","Allegra(180)"));
+            symptomMedicineMap.put("Fever", Arrays.asList("Paracetamol", "Crocin", "Dolo(650)"));
+            symptomMedicineMap.put("Headache", Arrays.asList("Saridon", "Paracetamol", "Asprin"));
+            symptomMedicineMap.put("Cough", Arrays.asList("Benadryl", "Allegra(180)"));
             symptomMedicineMap.put("Nausea", Arrays.asList("Vomitril Tablet"));
             symptomMedicineMap.put("Menstural Pain", Arrays.asList("Meftal Spas tablet", "Cyclomeff Tablet", "Dysmen Tablet"));
-            symptomMedicineMap.put("Stomach Ache", Arrays.asList("Ibuprofen","Probiotics"));
+            symptomMedicineMap.put("Stomach Ache", Arrays.asList("Ibuprofen", "Probiotics"));
         }
     }
 
+    // Method to view all medicines
+    void viewAllMedicines() {   
+        System.out.println("Medicine List");
+        System.out.println("*********************************");
+        System.out.println("Medicine Name\t\tMedicine Price");
+        System.out.println("*********************************");
+
+        Node temp = new Node("", 0);
+        for (int i = 0; i < max; i++) {
+            System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
+        }
+
+        System.out.print("Press 'B' to go back: ");
+        Scanner input = new Scanner(System.in);
+        char choice = input.next().charAt(0);
+        if (choice == 'B' || choice == 'b') {
+           choice_inp();
+        } else {
+            System.out.println("Invalid choice. Going back to the main menu.");
+        }
+    }
+
+    // Method to take orders based on selected symptoms
     void takeOrder(List<String> medicinesForSymptom) {
         Scanner input = new Scanner(System.in);
         Node temp = new Node("", 0);
@@ -62,11 +86,11 @@ public class Pharmacy {
         // Input order details
         System.out.print("Enter Customer Name: ");
         temp.customerName = input.next();
-        System.out.print("How many Medicine would you like to order from the above?: ");
+        System.out.print("How many Medicines would you like to order from the above?: ");
         temp.x = input.nextInt();
 
         if (temp.x > max) {
-            System.out.println("The Medicine you order exceeds the maximum amount of order!");
+            System.out.println("The number of medicines you ordered exceeds the maximum limit!");
             return;
         }
 
@@ -74,7 +98,8 @@ public class Pharmacy {
             System.out.print("Please enter the Medicine ID: ");
             temp.menu2[i] = input.nextInt();
             String selectedMedicineName = temp.medicineName[temp.menu2[i] - 1];
-            if (medicinesForSymptom.contains(selectedMedicineName)) {
+
+            if (binarySearch(temp.medicineName, selectedMedicineName) != -1) {
                 System.out.println("Medicine Name: " + selectedMedicineName);
                 System.out.print("Quantity of medicine you require?: ");
                 temp.quantity[i] = input.nextInt();
@@ -84,22 +109,9 @@ public class Pharmacy {
                 System.out.println("Invalid selection. This medicine is not associated with the selected symptom.");
             }
         }
-
-        System.out.println("===========================================================================");
-        System.out.println("Order Taken Successfully");
-        System.out.println("===========================================================================");
-        System.out.println("Do you wish to continue(y/n)");
-        char choice2=input.next().charAt(0);
-        if (choice2=='y'|| choice2=='Y')
-        {
-            handleSymptoms();
-        }
-        else{
-            System.out.println("Thankyou for your order");
-            System.exit(0);
-        }
     }
 
+    // Method to handle symptoms
     void handleSymptoms() {
         Scanner input = new Scanner(System.in);
 
@@ -136,18 +148,13 @@ public class Pharmacy {
 
                 if (choice == 'y' || choice == 'Y') {
                     takeOrder(medicinesForSymptom);
-                }
-                else if (choice=='n' || choice=='N')
-                {
+                } else if (choice == 'n' || choice == 'N') {
                     System.out.println("Do you want to keep searching for more medicines for different symptoms (y/n):");
-                    char choice1 =input.next().charAt(0);
-                    if (choice1 =='y' || choice1=='Y')
-                    {
+                    char choice1 = input.next().charAt(0);
+                    if (choice1 == 'y' || choice1 == 'Y') {
                         handleSymptoms();
-                    }
-                    else{
+                    } else {
                         exit();
-
                     }
                 }
             } else {
@@ -156,16 +163,42 @@ public class Pharmacy {
         }
     }
 
-
+    // Method to exit the program
     void exit() {
-        System.out.println("You choose to exit.");
+        System.out.println("You have chosen to exit.");
         System.exit(0);
+    }
 
+    // Binary search method to find the index of a medicine in the list
+    public int binarySearch(String[] arr, String x) {
+        int l = 0, r = arr.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            int res = x.compareTo(arr[m]);
+
+            if (res == 0)
+                return m;
+
+            if (res > 0)
+                l = m + 1;
+            else
+                r = m - 1;
+        }
+
+        return -1;
     }
 
     public static void main(String[] args) {
+        
+        choice_inp();
+       
+    }
+
+    public static void  choice_inp() {
+
         Pharmacy pharmacy = new Pharmacy();
-        Scanner input = new Scanner(System.in);
+
+         Scanner input = new Scanner(System.in);
         int menu;
 
         do {
@@ -173,7 +206,8 @@ public class Pharmacy {
             System.out.println("\t\t==================================================");
             System.out.println("\t\t--------------------------------------------------");
             System.out.println("\t\t||\t1. Check Symptoms\t\t\t\t ||");
-            System.out.println("\t\t||\t2. Exit\t\t\t\t\t ||");
+            System.out.println("\t\t||\t2. View all the medicines\t\t\t ||");
+            System.out.println("\t\t||\t3. Exit\t\t\t\t\t ||");
             System.out.println("\t\t--------------------------------------------------");
             System.out.print("Enter choice: ");
             menu = input.nextInt();
@@ -184,14 +218,19 @@ public class Pharmacy {
                     break;
 
                 case 2:
+                    pharmacy.viewAllMedicines();
+                    break;
+
+                case 3:
                     pharmacy.exit();
                     break;
 
                 default:
-                    System.out.println("You entered invalid input. Re-enter the input.");
+                    System.out.println("You entered an invalid input. Re-enter the input.");
                     break;
             }
-        } while (menu != 2);
-        System.out.println("Thank you");
+        } while (menu != 3);
+        System.out.println("Thank you for using the Pharmacy Management System.");
+        
     }
 }
