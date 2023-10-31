@@ -39,7 +39,7 @@ public class Pharmacy {
     }
 
     // Method to view all medicines
-    void viewAllMedicines() {   
+    void viewAllMedicines() {
         System.out.println("Medicine List");
         System.out.println("*********************************");
         System.out.println("Medicine Name\t\tMedicine Price");
@@ -50,17 +50,17 @@ public class Pharmacy {
             System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
         }
 
-        System.out.print("Press 'B' to go back: ");
+        System.out.print("Press 'B' to go back to the main menu: ");
         Scanner input = new Scanner(System.in);
         char choice = input.next().charAt(0);
         if (choice == 'B' || choice == 'b') {
            choice_inp();
         } else {
-            System.out.println("Invalid choice. Going back to the main menu.");
+            exit();
         }
     }
-
     // Method to take orders based on selected symptoms
+
     void takeOrder(List<String> medicinesForSymptom) {
         Scanner input = new Scanner(System.in);
         Node temp = new Node("", 0);
@@ -97,19 +97,41 @@ public class Pharmacy {
         for (int i = 0; i < temp.x; i++) {
             System.out.print("Please enter the Medicine ID: ");
             temp.menu2[i] = input.nextInt();
-            String selectedMedicineName = temp.medicineName[temp.menu2[i] - 1];
 
-            if (binarySearch(temp.medicineName, selectedMedicineName) != -1) {
-                System.out.println("Medicine Name: " + selectedMedicineName);
-                System.out.print("Quantity of medicine you require?: ");
-                temp.quantity[i] = input.nextInt();
-                temp.amount[i] = temp.quantity[i] * temp.Medicine[temp.menu2[i] - 1];
-                System.out.println("The amount You need to pay is: " + temp.amount[i] + " RM");
+            // Ensure that the selected medicine ID is within the valid range
+            if (temp.menu2[i] >= 1 && temp.menu2[i] <= max) {
+                String selectedMedicineName = temp.medicineName[temp.menu2[i] - 1];
+
+                if (medicinesForSymptom.contains(selectedMedicineName)) {
+                    System.out.println("Medicine Name: " + selectedMedicineName);
+                    System.out.print("Quantity of medicine you require?: ");
+                    temp.quantity[i] = input.nextInt();
+                    temp.amount[i] = temp.quantity[i] * temp.Medicine[temp.menu2[i] - 1];
+                    System.out.println("The amount You need to pay is: " + temp.amount[i]);
+                } else {
+                    System.out.println("Invalid selection. This medicine is not associated with the selected symptom.");
+                    return;
+                }
             } else {
-                System.out.println("Invalid selection. This medicine is not associated with the selected symptom.");
+                System.out.println("Invalid Medicine ID. Please select a valid ID.");
             }
         }
+        // Display "Order taken successfully" message
+        System.out.println("Order taken successfully");
+        System.out.println("Do you wish to continue (y/n)");
+        char choice2=input.next().charAt(0);
+        if (choice2 =='y' || choice2=='Y'){
+            handleSymptoms();
+
+        }
+        else{
+            exit();
+        }
     }
+
+
+
+
 
     // Method to handle symptoms
     void handleSymptoms() {
@@ -157,7 +179,8 @@ public class Pharmacy {
                         exit();
                     }
                 }
-            } else {
+            }
+            else {
                 System.out.println("No medicines associated with the selected symptom.");
             }
         }
@@ -165,40 +188,38 @@ public class Pharmacy {
 
     // Method to exit the program
     void exit() {
-        System.out.println("You have chosen to exit.");
+        System.out.println("Thankyou for using the Pharmacy Management System.");
         System.exit(0);
     }
 
     // Binary search method to find the index of a medicine in the list
     public int binarySearch(String[] arr, String x) {
+        Arrays.sort(arr); // Sort the array to ensure binary search works correctly
         int l = 0, r = arr.length - 1;
         while (l <= r) {
             int m = l + (r - l) / 2;
             int res = x.compareTo(arr[m]);
 
-            if (res == 0)
+            if (res == 0) {
                 return m;
-
-            if (res > 0)
+            } else if (res > 0) {
                 l = m + 1;
-            else
+            } else {
                 r = m - 1;
+            }
         }
-
         return -1;
     }
 
+
     public static void main(String[] args) {
-        
         choice_inp();
-       
+
     }
 
     public static void  choice_inp() {
-
         Pharmacy pharmacy = new Pharmacy();
-
-         Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
         int menu;
 
         do {
@@ -227,10 +248,11 @@ public class Pharmacy {
 
                 default:
                     System.out.println("You entered an invalid input. Re-enter the input.");
+
                     break;
             }
         } while (menu != 3);
         System.out.println("Thank you for using the Pharmacy Management System.");
-        
+
     }
 }
