@@ -50,7 +50,7 @@ public class Pharmacy {
             System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
         }
 
-        System.out.print("Press 'B' to go back to the main menu: ");
+        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to exit: ");
         Scanner input = new Scanner(System.in);
         char choice = input.next().charAt(0);
         if (choice == 'B' || choice == 'b') {
@@ -117,17 +117,21 @@ public class Pharmacy {
             }
         }
         // Display "Order taken successfully" message
+        System.out.println("_____________________________________");
         System.out.println("Order taken successfully");
+        System.out.println("____________________________________");
         System.out.println("Do you wish to continue (y/n)");
         char choice2=input.next().charAt(0);
-        if (choice2 =='y' || choice2=='Y'){
+        if (choice2 =='y' || choice2=='Y')
+        {
             handleSymptoms();
-
         }
-        else{
+        else
+        {
             exit();
         }
     }
+
 
 
     // Method to handle symptoms
@@ -182,6 +186,8 @@ public class Pharmacy {
             }
         }
     }
+
+
 
     // Method to exit the program
     void exit() {
