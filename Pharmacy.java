@@ -171,7 +171,7 @@ public class Pharmacy {
 
     // Binary search method to find the index of a medicine in the list
     public int binarySearch(String[] arr, String x) {
-        int l = 0, r = arr.length - 1;
+        int l = 0, r = arr.length + 1 ;
         while (l <= r) {
             int m = l + (r - l) / 2;
             int res = x.compareTo(arr[m]);
