@@ -130,9 +130,6 @@ public class Pharmacy {
     }
 
 
-
-
-
     // Method to handle symptoms
     void handleSymptoms() {
         Scanner input = new Scanner(System.in);
