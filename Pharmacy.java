@@ -139,7 +139,7 @@ public class Pharmacy {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Symptom Table");
-        System.out.println("_____________________________________");
+        System.out.println("____________________________________");
         System.out.println("Symptom ID\tSymptom Name");
         System.out.println("_____________________________________");
 
