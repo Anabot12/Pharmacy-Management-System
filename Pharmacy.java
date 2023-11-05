@@ -85,7 +85,7 @@ public class Pharmacy {
 
         // Input order details
         System.out.print("Enter Customer Name: ");
-        temp.customerName = input.next();
+        temp.customerName = input.nextLine();
         System.out.print("How many Medicines would you like to order from the above?: ");
         temp.x = input.nextInt();
 
