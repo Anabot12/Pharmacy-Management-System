@@ -50,12 +50,18 @@ public class Pharmacy {
             System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
         }
 
-        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to exit: ");
+        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to order: ");
         Scanner input = new Scanner(System.in);
         char choice = input.next().charAt(0);
         if (choice == 'B' || choice == 'b') {
            choice_inp();
-        } else {
+
+        }
+        else if (choice == 'A' || choice == 'a') {
+            List<String> allMedicines = Arrays.asList(temp.medicineName); // Create a list of all medicines
+            takeOrder(allMedicines);
+        }
+        else {
             exit();
         }
     }
@@ -64,6 +70,13 @@ public class Pharmacy {
     void takeOrder(List<String> medicinesForSymptom) {
         Scanner input = new Scanner(System.in);
         Node temp = new Node("", 0);
+
+        if (medicinesForSymptom==null)
+        {
+            System.out.println("_____________________________________");
+            System.out.println("order from the above medicine list");
+        }
+        else{
 
         // Input order details
         System.out.println("Add Order Details");
@@ -80,8 +93,9 @@ public class Pharmacy {
                 System.out.printf("%-8d  %-10s  %-24s   %.2f%n", i + 1, temp.type, medicineName, temp.Medicine[i]);
             }
         }
+    }
 
-        System.out.println();
+
 
         // Input order details
         System.out.print("Enter Customer Name: ");
