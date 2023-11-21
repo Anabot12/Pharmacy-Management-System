@@ -239,6 +239,31 @@ public class Pharmacy {
         System.exit(0);
     }
 
+<<<<<<< HEAD
+=======
+    // Binary search method to find the index of a medicine in the list
+    public int binarySearch(String[] arr, String x) {
+<<<<<<< HEAD
+        int l = 0, r = arr.length + 1 ;
+=======
+        Arrays.sort(arr); // Sort the array to ensure binary search works correctly
+        int l = 0, r = arr.length - 1;
+>>>>>>> 6a4f01d46aeea93779b255acd9aa1ee87a6cf63f
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            int res = x.compareTo(arr[m]);
+
+            if (res == 0) {
+                return m;
+            } else if (res > 0) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return -1;
+    }
+>>>>>>> 3e101b13991a874fa262a2076e5476dcf9376c82
 
 
     public static void main(String[] args) {
