@@ -37,6 +37,23 @@ public class Pharmacy {
             symptomMedicineMap.put("Stomach Ache", Arrays.asList("Ibuprofen", "Probiotics"));
         }
     }
+    public int binarySearch(String[] arr, String x) {
+        Arrays.sort(arr, String.CASE_INSENSITIVE_ORDER);
+        int l = 0, r = arr.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            int res = x.compareToIgnoreCase(arr[m]);
+
+            if (res == 0) {
+                return m;
+            } else if (res > 0) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return -1;
+    }
 
     // Method to view all medicines
     void viewAllMedicines() {
@@ -50,22 +67,34 @@ public class Pharmacy {
             System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
         }
 
-        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to order: ");
+        // Input for searching a medicine
+        System.out.print("Enter the name of the medicine to search: ");
         Scanner input = new Scanner(System.in);
+        String searchMedicineName = input.nextLine();
+
+        // Search for the medicine using binary search
+        int searchResult = binarySearch(temp.medicineName, searchMedicineName);
+
+        if (searchResult != -1) {
+            System.out.println("Medicine found at index: " + searchResult);
+        } else
+        {
+            System.out.println("Medicine not found in the list.");
+        }
+
+        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to order: ");
         char choice = input.next().charAt(0);
         if (choice == 'B' || choice == 'b') {
-           choice_inp();
-
-        }
-        else if (choice == 'A' || choice == 'a') {
-            List<String> allMedicines = Arrays.asList(temp.medicineName); // Create a list of all medicines
+            choice_inp();
+        } else if (choice == 'A' || choice == 'a') {
+            List<String> allMedicines = Arrays.asList(temp.medicineName);
             takeOrder(allMedicines);
-        }
-        else {
+        } else {
             exit();
         }
     }
-    // Method to take orders based on selected symptoms
+
+    // take orders based on selected symptoms
 
     void takeOrder(List<String> medicinesForSymptom) {
         Scanner input = new Scanner(System.in);
@@ -138,7 +167,7 @@ public class Pharmacy {
         char choice2=input.next().charAt(0);
         if (choice2 =='y' || choice2=='Y')
         {
-            handleSymptoms();
+            choice_inp();
         }
         else
         {
@@ -195,7 +224,8 @@ public class Pharmacy {
                     }
                 }
             }
-            else {
+            else
+            {
                 System.out.println("No medicines associated with the selected symptom.");
             }
         }
@@ -209,24 +239,6 @@ public class Pharmacy {
         System.exit(0);
     }
 
-    // Binary search method to find the index of a medicine in the list
-    public int binarySearch(String[] arr, String x) {
-        Arrays.sort(arr); // Sort the array to ensure binary search works correctly
-        int l = 0, r = arr.length - 1;
-        while (l <= r) {
-            int m = l + (r - l) / 2;
-            int res = x.compareTo(arr[m]);
-
-            if (res == 0) {
-                return m;
-            } else if (res > 0) {
-                l = m + 1;
-            } else {
-                r = m - 1;
-            }
-        }
-        return -1;
-    }
 
 
     public static void main(String[] args) {
