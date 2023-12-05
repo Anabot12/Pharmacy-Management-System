@@ -11,7 +11,7 @@ public class user_login {
         String dbUser = "root";
         String dbPassword = "astitva";
 
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             Scanner scanner = new Scanner(System.in);
 
             boolean isAuthenticated = false;
@@ -72,6 +72,7 @@ public class user_login {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     private static boolean isUsernameExists(Connection connection, String username) throws SQLException {
