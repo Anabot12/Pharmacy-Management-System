@@ -11,30 +11,30 @@ public class user_login {
         String dbUser = "root";
         String dbPassword = "astitva";
 
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword)) {
             Scanner scanner = new Scanner(System.in);
 
             boolean isAuthenticated = false;
 
             while (!isAuthenticated) {
-                System.out.println("Welcome to User Authentication System");
+                System.out.println("Welcome to Pharmacy Management System");
                 System.out.println("1. Sign Up (New User)");
                 System.out.println("2. Log In (Existing User)");
                 System.out.println("3. Exit");
 
                 System.out.print("Please choose an option (1/2/3): ");
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+                scanner.nextLine();
 
                 if (choice == 1) {
-                    // User Registration (Sign-up)
+                    // (Sign-up)
                     System.out.print("Enter a new username: ");
                     String newUsername = scanner.nextLine();
 
                     System.out.print("Enter a new password: ");
                     String newPassword = scanner.nextLine();
 
-                    // Check if the username already exists
+                    // if the username already exists
                     if (!isUsernameExists(connection, newUsername)) {
                         String insertQuery = "INSERT INTO user (username, password) VALUES (?, ?)";
                         PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
@@ -72,6 +72,7 @@ public class user_login {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     private static boolean isUsernameExists(Connection connection, String username) throws SQLException {

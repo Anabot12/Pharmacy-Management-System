@@ -38,6 +38,33 @@ public class Pharmacy {
         }
     }
 
+    private String getAssociatedSymptom(Map<String, List<String>> symptomMedicineMap, String medicineName) {
+        for (Map.Entry<String, List<String>> entry : symptomMedicineMap.entrySet()) {
+            if (entry.getValue().contains(medicineName)) {
+                return entry.getKey();
+            }
+        }
+        return "Symptom not found";  // Handle the case where the symptom is not found
+    }
+
+    public int binarySearch(String[] arr, String x) {
+        Arrays.sort(arr, String.CASE_INSENSITIVE_ORDER);
+        int l = 0, r = arr.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            int res = x.compareToIgnoreCase(arr[m]);
+
+            if (res == 0) {
+                return m;
+            } else if (res > 0) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return -1;
+    }
+
     // Method to view all medicines
     void viewAllMedicines() {
         System.out.println("Medicine List");
@@ -50,22 +77,37 @@ public class Pharmacy {
             System.out.printf("%-20s  %.2f%n", temp.medicineName[i], temp.Medicine[i]);
         }
 
-        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to order: ");
+        // Input for searching a medicine
+        System.out.print("Enter the name of the medicine to search: ");
         Scanner input = new Scanner(System.in);
+        String searchMedicineName = input.nextLine();
+
+        // Search for the medicine using binary search
+        int searchResult = binarySearch(temp.medicineName, searchMedicineName);
+
+        if (searchResult != -1) {
+            String foundMedicineName = temp.medicineName[searchResult];
+            String associatedSymptom = getAssociatedSymptom(temp.symptomMedicineMap, foundMedicineName);
+            System.out.println("Medicine found!");
+            System.out.println("Associated Symptom: " + associatedSymptom);
+        } else
+        {
+            System.out.println("Medicine not found in the list.");
+        }
+
+        System.out.print("Press 'B' to go back to the main menu OR Press 'A' to order: ");
         char choice = input.next().charAt(0);
         if (choice == 'B' || choice == 'b') {
-           choice_inp();
-
-        }
-        else if (choice == 'A' || choice == 'a') {
-            List<String> allMedicines = Arrays.asList(temp.medicineName); // Create a list of all medicines
+            choice_inp();
+        } else if (choice == 'A' || choice == 'a') {
+            List<String> allMedicines = Arrays.asList(temp.medicineName);
             takeOrder(allMedicines);
-        }
-        else {
+        } else {
             exit();
         }
     }
-    // Method to take orders based on selected symptoms
+
+    // take orders based on selected symptoms
 
     void takeOrder(List<String> medicinesForSymptom) {
         Scanner input = new Scanner(System.in);
@@ -95,8 +137,6 @@ public class Pharmacy {
         }
     }
 
-
-
         // Input order details
         System.out.print("Enter Customer Name: ");
         temp.customerName = input.nextLine();
@@ -108,37 +148,45 @@ public class Pharmacy {
             return;
         }
 
+        double total_cost=0;
         for (int i = 0; i < temp.x; i++) {
-            System.out.print("Please enter the Medicine ID: ");
-            temp.menu2[i] = input.nextInt();
+            boolean validMedicine = false;
 
-            // Ensure that the selected medicine ID is within the valid range
-            if (temp.menu2[i] >= 1 && temp.menu2[i] <= max) {
-                String selectedMedicineName = temp.medicineName[temp.menu2[i] - 1];
+            while (!validMedicine) {
+                System.out.print("Please enter the Medicine ID: ");
+                temp.menu2[i] = input.nextInt();
 
-                if (medicinesForSymptom.contains(selectedMedicineName)) {
-                    System.out.println("Medicine Name: " + selectedMedicineName);
-                    System.out.print("Quantity of medicine you require?: ");
-                    temp.quantity[i] = input.nextInt();
-                    temp.amount[i] = temp.quantity[i] * temp.Medicine[temp.menu2[i] - 1];
-                    System.out.println("The amount You need to pay is: " + temp.amount[i]);
+                // Ensure that the selected medicine ID is within the valid range
+                if (temp.menu2[i] >= 1 && temp.menu2[i] <= max) {
+                    String selectedMedicineName = temp.medicineName[temp.menu2[i] - 1];
+
+                    if (medicinesForSymptom.contains(selectedMedicineName)) {
+                        System.out.println("Medicine Name: " + selectedMedicineName);
+                        System.out.print("Quantity of medicine you require?: ");
+                        temp.quantity[i] = input.nextInt();
+                        temp.amount[i] = temp.quantity[i] * temp.Medicine[temp.menu2[i] - 1];
+                        total_cost += temp.amount[i];
+                        System.out.println("The amount You need to pay is: " + temp.amount[i]);
+                        validMedicine = true;
+                    } else {
+                        System.out.println("Invalid selection. This medicine is not associated with the selected symptom.");
+                    }
                 } else {
-                    System.out.println("Invalid selection. This medicine is not associated with the selected symptom.");
-                    return;
+                    System.out.println("Invalid Medicine ID. Please select a valid ID.");
                 }
-            } else {
-                System.out.println("Invalid Medicine ID. Please select a valid ID.");
             }
         }
         // Display "Order taken successfully" message
         System.out.println("_____________________________________");
         System.out.println("Order taken successfully");
         System.out.println("____________________________________");
+        System.out.println("Total Cost for the order: " + total_cost);
+        System.out.println("____________________________________");
         System.out.println("Do you wish to continue (y/n)");
         char choice2=input.next().charAt(0);
         if (choice2 =='y' || choice2=='Y')
         {
-            handleSymptoms();
+            choice_inp();
         }
         else
         {
@@ -172,13 +220,20 @@ public class Pharmacy {
 
             if (medicinesForSymptom != null) {
                 System.out.println("Medicines associated with " + selectedSymptom + ":");
+                System.out.println("______________________________________________________________________________________________");
+                System.out.printf("%-25s %-20s %-15s %-20s%n", "Medicine Name", "Medicine Type", "Medicine Price", "Availability");
+                System.out.println("----------------------------------------------------------------------------------------------");
+
                 for (String medicine : medicinesForSymptom) {
                     if (Arrays.asList(temp.medicineName).contains(medicine)) {
-                        System.out.println(medicine + " (Available)");
+                        int index = Arrays.asList(temp.medicineName).indexOf(medicine);
+                        System.out.printf("%-25s %-20s %-15.2f %-20s%n", medicine, temp.type, temp.Medicine[index],
+                                "Available");
                     } else {
-                        System.out.println(medicine + " (Not Available)");
+                        System.out.printf("%-25s %-20s %-15s %-20s%n", medicine, temp.type, "N/A", "Not Available");
                     }
                 }
+
 
                 System.out.print("Do you want to place an order (y/n): ");
                 char choice = input.next().charAt(0);
@@ -195,7 +250,8 @@ public class Pharmacy {
                     }
                 }
             }
-            else {
+            else
+            {
                 System.out.println("No medicines associated with the selected symptom.");
             }
         }
@@ -207,29 +263,6 @@ public class Pharmacy {
     void exit() {
         System.out.println("Thankyou for using the Pharmacy Management System.");
         System.exit(0);
-    }
-
-    // Binary search method to find the index of a medicine in the list
-    public int binarySearch(String[] arr, String x) {
-<<<<<<< HEAD
-        int l = 0, r = arr.length + 1 ;
-=======
-        Arrays.sort(arr); // Sort the array to ensure binary search works correctly
-        int l = 0, r = arr.length - 1;
->>>>>>> 6a4f01d46aeea93779b255acd9aa1ee87a6cf63f
-        while (l <= r) {
-            int m = l + (r - l) / 2;
-            int res = x.compareTo(arr[m]);
-
-            if (res == 0) {
-                return m;
-            } else if (res > 0) {
-                l = m + 1;
-            } else {
-                r = m - 1;
-            }
-        }
-        return -1;
     }
 
 
